@@ -1,19 +1,17 @@
-const express=require("express");
+const express = require("express");
 
-const router=express.Router();
+const router = express.Router();
 
 
 const {
     getTasks,
     getTaskById
-}=require("../controllers/taskController");
+} = require("../controllers/taskController");
 
 
+router.get("/", getTasks);
 
-router.get("/",getTasks);
-
-router.get("/:id",getTaskById);
-
+router.get("/:id", getTaskById);
 
 
-module.exports=router;
+module.exports = router;
