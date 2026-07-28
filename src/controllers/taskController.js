@@ -57,9 +57,53 @@ const createTask = (req, res) => {
 
 };
 
+// Update task
+const updateTask = (req, res) => {
+
+    const id = Number(req.params.id);
+
+    const task = tasks.find(
+        task => task.id === id
+    );
+
+    if (!task) {
+        return res.status(404).json({
+            error: `Task ${id} not found`
+        });
+    }
+
+    const { title, done } = req.body;
+    if (title !== undefined) {
+        task.title = title;
+    }
+
+    if (done !== undefined) {
+        task.done = done;
+    }
+    res.json(task);
+};
+
+// Delete task
+const deleteTask = (req, res) => {
+    const id = Number(req.params.id);
+    const index = tasks.findIndex(task => task.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({
+            error: `Task ${id} not found`
+        });
+    }
+
+    tasks.splice(index, 1);
+    res.status(204).send();
+};
+
+
 
 module.exports = {
     getTasks,
     getTaskById,
-    createTask
+    createTask,
+    updateTask,
+    deleteTask
 };
