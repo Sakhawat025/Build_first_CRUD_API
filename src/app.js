@@ -2,10 +2,19 @@ const express = require("express");
 
 const app = express();
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
+
+const taskRoutes=require("./routes/taskRoutes");
 
 app.use(express.json());
 
-const taskRoutes=require("./routes/taskRoutes");
+app.use(
+    "/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument)
+);
+
 
 app.use("/tasks",taskRoutes);
 
