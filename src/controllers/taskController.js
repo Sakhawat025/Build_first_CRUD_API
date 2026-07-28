@@ -28,8 +28,38 @@ const getTaskById = (req,res)=>{
 
 };
 
+const createTask = (req, res) => {
+
+    const { title } = req.body;
+
+
+    // Validation
+    if (!title || title.trim() === "") {
+
+        return res.status(400).json({
+            error: "Title is required"
+        });
+
+    }
+
+
+    const newTask = {
+        id: tasks.length + 1,
+        title: title,
+        done: false
+    };
+
+
+    tasks.push(newTask);
+
+
+    res.status(201).json(newTask);
+
+};
+
 
 module.exports = {
     getTasks,
-    getTaskById
+    getTaskById,
+    createTask
 };
