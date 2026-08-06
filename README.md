@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Task API is a RESTful backend application developed using **Node.js** and **Express.js**.  
+Task API is a RESTful backend application developed using **Node.js** and **Express.js**. The application was upgraded from in-memory storage to SQLite-based persistent storage. All CRUD operations now interact with a SQLite database.
 The project provides a complete CRUD (Create, Read, Update, Delete) system for managing tasks through structured API endpoints.
 
 The application follows a modular backend architecture by separating business logic, routing, and data management into different layers. Swagger UI is integrated to provide interactive API documentation and testing support.
@@ -35,6 +35,8 @@ The API implements proper request handling, validation, error responses, and sta
 | Swagger UI | API documentation and interactive testing |
 | Git | Version control system |
 | GitHub | Source code hosting and collaboration |
+| SQLite         | Persistent database storage     |
+| better-sqlite3 | SQLite integration with Node.js |
 
 ---
 
@@ -46,7 +48,8 @@ Build_CRUD_api/
 
 │
 ├── src/
-│   │
+│   ├── database/
+│   ├   └── database.js
 │   ├── controllers/
 │   │   └── taskController.js
 │   │
@@ -66,6 +69,7 @@ Build_CRUD_api/
 ├── package.json
 ├── package-lock.json
 └── README.md
+└── tasks.db (generated automatically)
 
 
 ---
@@ -102,15 +106,22 @@ Available endpoints:
 
 ---
 
-# Data Storage
+# Database Storage
 
-Currently, the application uses an in-memory JavaScript array for task storage.
+The application uses SQLite for persistent task storage.
 
-Example:
+SQLite was selected because it is lightweight, does not require a separate database server, stores data in a single file, and maintains data after application restart.
 
-```javascript
-let tasks = [];
+Database table:
+
+| Column | Type |
+|--------|------|
+| id | INTEGER PRIMARY KEY |
+| title | TEXT |
+| done | INTEGER |
+
+The database file is automatically created when the application starts.
 
 Developed by **Sakhawat Hossain**
 
-This project demonstrates practical backend development skills using Node.js, Express.js, RESTful API design, and API documentation practices.
+This project demonstrates practical backend development skills through RESTful API development using Node.js and Express.js, with SQLite-based persistent data storage, CRUD operation implementation, and interactive API documentation using Swagger UI.
