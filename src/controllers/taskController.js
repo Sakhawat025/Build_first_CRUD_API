@@ -111,15 +111,19 @@ const updateTask = (req, res) => {
 // Delete task
 const deleteTask = (req, res) => {
     const id = Number(req.params.id);
-    const index = tasks.findIndex(task => task.id === id);
+    const existingTask = tasks.prepare(
+        "SELECT * FROM tasks WHERE id = ?"
+    ).get(id);
 
-    if (index === -1) {
+    if(!existingTask){
         return res.status(404).json({
             error: `Task ${id} not found`
         });
     }
 
-    tasks.splice(index, 1);
+    tasks.prepare(
+        "DELETE FROM tasks WHERE id = ?"
+    ).run(id);
     res.status(204).send();
 };
 
