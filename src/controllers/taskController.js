@@ -46,14 +46,17 @@ const createTask = (req, res) => {
     }
 
 
-    const newTask = {
-        id: tasks.length + 1,
-        title: title,
-        done: false
-    };
+    const result = tasks.prepare(
+        `
+        INSERT INTO tasks (title, done)
+        VALUES (?, ?)
 
+        `
+    ).run(title, 0);
 
-    tasks.push(newTask);
+    const newTask = tasks.prepare(
+        "SELECT * FROM tasks WHERE id = ?"
+    ).get(result.lastInsertRowid);
 
 
     res.status(201).json(newTask);
