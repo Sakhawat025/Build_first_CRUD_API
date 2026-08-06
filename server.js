@@ -1,3 +1,4 @@
+require("./src/database/database");
 const app = require("./src/app");
 
 
