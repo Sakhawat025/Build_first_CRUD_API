@@ -68,25 +68,44 @@ const updateTask = (req, res) => {
 
     const id = Number(req.params.id);
 
-    const task = tasks.find(
-        task => task.id === id
-    );
+    const existingTask = tasks.prepare(
+        "SELECT * FROM tasks WHERE id = ?"
+    ).get(id);
 
-    if (!task) {
+    if(!existingTask) {
         return res.status(404).json({
             error: `Task ${id} not found`
         });
     }
 
     const { title, done } = req.body;
-    if (title !== undefined) {
-        task.title = title;
-    }
 
-    if (done !== undefined) {
-        task.done = done;
-    }
-    res.json(task);
+    const updateTitle = title !== undefined
+        ? title : existingTask.title;
+
+    const updatedDone = done !== undefined 
+        ? (done ? 1 : 0)
+        : existingTask.done;
+
+    tasks.prepare(
+        `
+        UPDATE tasks 
+        SET title = ?, done = ?
+        WHERE id = ?
+
+        `
+    ).run(
+        updateTitle,
+        updatedDone,
+        id
+    );
+
+    const updatedTask = tasks.prepare(
+        "SELECT * FROM tasks WHERE id = ?"
+    ).get(id);
+
+    
+    res.json(updatedTask);
 };
 
 // Delete task
