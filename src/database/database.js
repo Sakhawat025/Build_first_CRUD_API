@@ -1,39 +1,55 @@
-const Database = require("better-sqlite3");
-const path = require("path");
-
-const dbPath = path.join(__dirname, "../../tasks.db");
-
-const db = new Database(dbPath);
-
-// Create tasks table
-db.prepare(`
-    CREATE TABLE IF NOT EXISTS tasks (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        done INTEGER DEFAULT 0
-    )
-`).run();
+const { Pool } = require("pg");
+require("dotenv").config();
 
 
-// Seed initial tasks only if table is empty
-
-const count = db.prepare(
-    "SELECT COUNT(*) AS count FROM tasks"
-).get();
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL
+});
 
 
-if (count.count === 0) {
+// Create table
+async function initDatabase() {
 
-    const insert = db.prepare(`
-        INSERT INTO tasks (title, done)
-        VALUES (?, ?)
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS tasks (
+            id SERIAL PRIMARY KEY,
+            title TEXT NOT NULL,
+            done BOOLEAN DEFAULT FALSE
+        )
     `);
 
 
-    insert.run("Learn Node.js", 0);
-    insert.run("Build CRUD API", 0);
-    insert.run("Connect SQLite Database", 0);
+    // Check existing data
+    const result = await pool.query(
+        "SELECT COUNT(*) FROM tasks"
+    );
 
+
+    if (parseInt(result.rows[0].count) === 0) {
+
+        await pool.query(
+            `
+            INSERT INTO tasks(title, done)
+            VALUES
+            ($1,$2),
+            ($3,$4),
+            ($5,$6)
+            `,
+            [
+                "Learn Node.js",
+                false,
+                "Build CRUD API",
+                false,
+                "Connect PostgreSQL Database",
+                false
+            ]
+        );
+    }
 }
 
-module.exports = db;
+
+initDatabase()
+.catch(err => console.error(err));
+
+
+module.exports = pool;
