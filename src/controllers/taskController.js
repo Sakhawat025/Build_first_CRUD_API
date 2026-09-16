@@ -2,33 +2,33 @@ const tasks = require("../models/taskModel");
 
 
 
-const getTasks = (req,res)=>{
-    const rows = tasks.prepare(
-        "SELECT * FROM tasks"
-    ).all();
-
-    res.json(rows);
+const getTasks = async (req, res) => {
+    try {
+        const result = await tasks.query("SELECT * FROM tasks");
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 
-
-const getTaskById = (req,res)=>{
-
+const getTaskById = async (req, res) => {
     const id = Number(req.params.id);
 
-    const task = tasks.prepare(
-        "SELECT * FROM tasks WHERE id = ?"
-    ).get(id);
+    try {
+        const result = await tasks.query(
+            "SELECT * FROM tasks WHERE id = $1",
+            [id]
+        );
 
-    if(!task){
-        return res.status(404).json({
-            error: `Task ${id} not found`
-        });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Task not found" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-
-    res.json(task);
-
 };
 
 const createTask = (req, res) => {
