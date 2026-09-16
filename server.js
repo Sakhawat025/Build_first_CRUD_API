@@ -1,4 +1,5 @@
 const { initDatabase } = require("./src/database/database");
+require("./src/config/supabase");
 const app = require("./src/app");
 
 async function startServer() {
