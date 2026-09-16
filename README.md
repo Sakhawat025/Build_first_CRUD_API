@@ -125,3 +125,17 @@ The database file is automatically created when the application starts.
 Developed by **Sakhawat Hossain**
 
 This project demonstrates practical backend development skills through RESTful API development using Node.js and Express.js, with SQLite-based persistent data storage, CRUD operation implementation, and interactive API documentation using Swagger UI.
+
+
+
+# PostgreSQL and docker
+## CRUD Testing
+
+POST /tasks
+Creates a new task in PostgreSQL.
+
+PUT /tasks/:id
+Updates existing task.
+
+DELETE /tasks/:id
+Deletes a task.
