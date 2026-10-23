@@ -7,6 +7,8 @@ const swaggerDocument = require("./swagger.json");
 
 const taskRoutes = require("./routes/taskRoutes");
 const authRoutes = require("./routes/authRoutes");
+const publicRoutes = require("./routes/publicRoutes");
+const protectedRoutes = require("./routes/protectedRoutes");
 
 app.use(express.json());
 
@@ -17,13 +19,15 @@ app.use(
 );
 
 app.use("/auth", authRoutes);
+app.use("/public", publicRoutes);
+app.use("/protected", protectedRoutes);
 app.use("/tasks", taskRoutes);
 
 app.get("/", (req, res) => {
     res.json({
         name: "Task API",
         version: "1.0",
-        endpoints: ["/tasks", "/auth"]
+        endpoints: ["/tasks", "/auth", "/public", "/protected"]
     });
 });
 
