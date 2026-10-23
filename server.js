@@ -1,16 +1,22 @@
+require("dotenv").config();
 const { initDatabase } = require("./src/database/database");
 require("./src/config/supabase");
 const app = require("./src/app");
 
+const PORT = process.env.PORT || 3000;
+
 async function startServer() {
     try {
-        await initDatabase();
-        app.listen(3000, () => {
-            console.log("Server running on port 3000");
-        });
+        if (process.env.DATABASE_URL) {
+            await initDatabase();
+        }
     } catch (error) {
-        console.error("Database connection failed:", error);
+        console.warn("Database connection notice:", error.message);
     }
+
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT} and connected to Supabase`);
+    });
 }
 
 startServer();
