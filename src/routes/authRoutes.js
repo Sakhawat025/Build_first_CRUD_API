@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const supabase = require("../config/supabase");
+const authMiddleware = require("../middleware/authMiddleware");
 
 // POST /auth/signup
 router.post("/signup", async (req, res) => {
@@ -66,6 +67,16 @@ router.post("/login", async (req, res) => {
         return res.status(401).json({
             error: "Invalid login credentials"
         });
+    }
+});
+
+// POST /auth/logout (Stage 4: protected route using authMiddleware)
+router.post("/logout", authMiddleware, async (req, res) => {
+    try {
+        await supabase.auth.signOut();
+        return res.status(204).send();
+    } catch (err) {
+        return res.status(204).send();
     }
 });
 
