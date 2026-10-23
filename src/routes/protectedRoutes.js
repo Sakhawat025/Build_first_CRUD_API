@@ -22,4 +22,22 @@ router.get("/dashboard", authMiddleware, (req, res) => {
     });
 });
 
+// GET /protected/admin (Stretch: 403 Forbidden case - authenticated user without admin role)
+router.get("/admin", authMiddleware, (req, res) => {
+    const isAdmin =
+        req.user.user_metadata?.role === "admin" ||
+        req.user.app_metadata?.role === "admin";
+
+    if (!isAdmin) {
+        return res.status(403).json({
+            error: "Forbidden: Admin privileges required"
+        });
+    }
+
+    return res.status(200).json({
+        message: "Welcome to the admin area!",
+        user: req.user.email
+    });
+});
+
 module.exports = router;
